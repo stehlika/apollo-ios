@@ -7,6 +7,16 @@ extension String: JSONDecodable, JSONEncodable {
         self = string
     case let int as Int:
         self = String(int)
+    case let dictionary as [String: Any]:
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: dictionary) else {
+            self = "{}"
+            return
+        }
+        guard let jsonString = String(data: jsonData, encoding: .utf8) else {
+            self = "{}"
+            return
+        }
+        self = jsonString
     default:
         throw JSONDecodingError.couldNotConvert(value: value, to: String.self)
     }
